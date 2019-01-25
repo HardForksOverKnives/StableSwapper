@@ -10,6 +10,14 @@
 	The Stable Swapper Protocol aims to achieve two goals: facilitate the creation of ERC20 compliant stablecoins that are backed by other ERC20 stablecoins, and enable stablecoin liquidity providers to profit off market fluctuations between coins with identical pegs. Currently, the most common fiat-pegged ERC20 stablecoins are either backed by fiat like TUSD and USDC, or backed by cryptocurrency like MakerDao's Dai. Fiat-backed stablecoin architectures like TUSD and USDC require a central custodian to manage the fiat reserves backing the coin. Cryptocurrency-backed stablecoins like Dai maintain decentralization by utilizing Ethereum smart contracts to connect stability seekers (holders of Dai) with risk seekers (collateralized debt position holders). The Dai/CDP system is fairly complex. If you are unfamiliar with it, I suggest reading through MakerDao's <a href="https://makerdao.com/whitepaper/">overview</a>.
 </p>
 
+<p>
+	The stablecoin landscape as of 2019 includes a growing set of different coins with varying degrees of centralization. The smart contracts deployed by centralized systems relying on fiat custodians are typically much less sophisticated than the smart contracts responsible for decentralized coins like Dai. This greatly reduces the number of attack vectors targeting the smart contract, but creates new off-chain attack vectors that target the custodian. For some crytocurrency users, centralized coins like USDC fly in the face of the fundamental value proposition of cryptocurrencies: decentralization. Other users would rather place trust in centralized authorities, as they are regulated and insured against loss of funds. There appears to be some disagreement on just how much decentralization is necessary, given their pegs are derived from a centralized, fiat currency: USD.
+</p>
+
+<p>
+	Using the Stable Swapper protocol, coins that represent a 1:1 claim from a collateral pool of stablecoins can be minted. This pool can be comprised of only decentralized coins, centralized coins, or a hybrid of the two. This takes away the risk involved with being 100% exposed to the intricacies and security holes of a single stablecoin system. For example, if Stable Swapper is used to mint a stablecoin backed by Dai and USDC, and Dai's peg breaks, bringing it to $.50, the new stablecoin is only 50% exposed to the drop, so it's still got $.75 of collateral backing each coin. This diversification of risk is compatible with the intent of stablecoins because it contributes to stability.
+</p>
+
 <h2>Tokens and Actors</h3>
 <p>
 	<b>SWAP</b>: An ERC20 stablecoin minted and burned by Stable Swapper. SWAP is minted when a user deposits collateral, and burned when a user withdraws collateral. Each SWAP token is redeemable for a stablecoin from the collateral pool. The number of SWAP tokens in existence is always equal to the sum of the stablecoins in the collateral pool. In other words, SWAP is a stablecoin backed by other stablecoins.
