@@ -17,9 +17,12 @@
 # Table of Contents
 1. [Current Stablecoin Landscape](#current_stablecoin_landscape)
 2. [Tokens and Actors](#tokens_and_actors)
+<br><ul><li>[SWAP](#swap)</li><li>[STAKE](#stake)</li><li>[Swapper](#swapper)</li><li>[Staker](#staker)</li></ul>
 3. [Architecture Overview](#architecture_overview)
 4. [Protocol Variables](#protocol_variables)
+<br><ul><li>[Collateral Ranges](#collateral_ranges)</li><li>[Swap Fee](#swap_fee)</li></ul>
 5. [Governance](#governance)
+<br><ul><li>[Private Owner Phase](#private_owner_phase)</li><li>[Protected Phase](#protected_phase)</li><li>[Decentralization Phase](#decentralization_phase)</li><li>[STAKE Lock Delay](#stake_lock_delay)</li><li>[Proposal Threshold](#proposal_threshold)</li><li>[Approval Threshold](#approval_threshold)</li></ul>
 
 <a name="current_stablecoin_landscape"></a>
 <h2>Current Stablecoin Landscape</h2>
@@ -30,10 +33,11 @@
 <a name="tokens_and_actors"></a>
 <h2>Tokens and Actors</h2>
 <p>
+	<a name="swap"></a>
 	<b>SWAP</b>: An ERC20 stablecoin minted and burned by Stable Swapper. SWAP is minted when a user deposits collateral, and burned when a user withdraws collateral. Each SWAP token is redeemable for a stablecoin from the collateral pool. The number of SWAP tokens in existence is always equal to the sum of the stablecoins in the collateral pool. In other words, SWAP is a stablecoin backed by other stablecoins.
-	<br><br><b>STAKE</b>: A protocol token minted by Stable Swapper, used for decentralized governance over the protocol variables. Additionally, Swapping fees are paid out to holders of STAKE. In order to obtain STAKE, a user must send SWAP to a smart contract, which time-locks the SWAP until the STAKE's expiration block number. The only utility of expired STAKE is the ability to retrieve the time-locked SWAP.
-	<br><br><b>Swapper</b>: An actor swapping between coins held in the collateral pool. Swappers are incentivized by the market dynamics of coins in the collateral pool. Currently, the most obvious incentive for swappers is to act on arbitrage opportunities between coins in the collateral pool. For example, if the Dai/USDC exchange rate on Exchange A is more than 1 + SWAP fee + gas, there is a guaranteed profit opportunity to swap USDC for Dai and sell the Dai on Exchange A.
-	<br><br><b>Staker</b>: An actor holding STAKE. Stakers holding more than the (((proposal threshold))) are permitted to propose changes to protocol variables. All Stakers are able to vote on these proposals. Stakers have the most to lose in the event of a successful attack on the protocol, because their SWAP is time locked in a smart contract and unredeemable until (((Stake Lock Blocks))) have passed. More on this in (((Governance))).
+	<br><br><a name="stake"></a><b>STAKE</b>: A protocol token minted by a Stable Swapper governance smart contract once governance has reached the <a href="#protected_phase">Protected Phase</a>. STAKE is used for decentralized governance over the <a href="#protocol_variables">protocol variables</a>. Additionally, Swapping fees are paid out to holders of STAKE. In order to obtain STAKE, a user must send SWAP to a smart contract, which time-locks the SWAP until the STAKE's expiration block number. The only utility of expired STAKE is the ability to retrieve the time-locked SWAP.
+	<br><br><a name="swapper"></a><b>Swapper</b>: An actor swapping between coins held in the collateral pool. Swappers are incentivized by the market dynamics of coins in the collateral pool. Currently, the most obvious incentive for swappers is to act on arbitrage opportunities between coins in the collateral pool. For example, if the Dai/USDC exchange rate on Exchange A is more than 1 + SWAP fee + gas, there is a guaranteed profit opportunity to swap USDC for Dai and sell the Dai on Exchange A.
+	<br><br><a name="staker"></a><b>Staker</b>: An actor holding STAKE. Stakers holding more than the <a href="#proposal_threshold">proposal threshold</a> are permitted to propose changes to protocol variables. All Stakers are able to vote on these proposals. Stakers have the most to lose in the event of a successful attack on the protocol, because their SWAP is time locked in a smart contract and unredeemable until <a href="#stake_lock_delay">STAKE Lock Delay</a> blocks have passed. More on this in <a href="#governance">Governance</a>.
 </p>
 
 <a name="architecture_overview"></a>
@@ -50,11 +54,20 @@
 <a name="protocol_variables"></a>
 <h2>Protocol Variables</h2>
 <p>
-	Because cryptocurrency markets are unpredictable, it's important to give decentralized protocols the ability to adapt and updatein accordance with the desires of good actors using the protocol. For example, there will likely be many Stablecoin projects launching after the Stable Swapper contract has been deployed, and it's important that these coins can be added to the liquidity pool. However, plasticity often opens the door for bad actors attempting to manipulate protocol variables without concern for the longterm stability of the protocol.
+	Because cryptocurrency markets are unpredictable, it's important to give decentralized protocols the ability to adapt and update in accordance with the desires of good actors using the protocol. For example, there will likely be many Stablecoin projects launching after the Stable Swapper contract has been deployed, and it's important that these coins can be added to the liquidity pool. However, plasticity often opens the door for bad actors attempting to manipulate protocol variables without concern for the longterm stability of the protocol. This is why the protocol keeps the number of publically mutable variables to a minimum. The following variables are externally set according to the current governance mechanism.
+	<br><br><a name="collateral_ranges"/><b>Collateral Ranges</b>: An (address -> range) map where the keys are addresses of ERC20 smart contracts and the values are acceptable ranges for weight within the collateral pool.
+	<br><br><a name="swap_fee"/><b>Swap Fee</b>: A double representing the fee Swappers must pay when swapping between coins in the collateral pool.
 </p>
 
 <a name="governance"></a>
 <h2>Governance</h2>
 <p>
-	Governance over the Stable Swapper protocol leverages STAKE tokens to vote on proposals that change the 
+	Governance over the Stable Swapper protocol will be facilitated by a separate smart contract. Every Stable Swapper contract points to it's own governance contract. The default governance contract will be a contract that allows decentralization over protocol ownership to be phased in over time. This will include the 3 phases of governance listed below.
+	<br><br><a name="private_owner_phase"/><b>Private Owner Phase</b>: During this phase, the contract owner possesses complete control over protocol variables. Transitioning to the next phase requires the contract owner to call the "relinquishControl" function of the governance contract.
+	<br><br><a name="protected_phase"/><b>Protected Phase</b>: This phase introduces the ability to mint STAKE tokens and vote on protocol variables. However, the contract owner now maintains complete control over governance variables. Again, in order to transition to the next phase, the contract owner must call the "relinquishControl" function of the governance contract.
+	<br><br><a name="decentralization_phase"/><b>Decentralization Phase</b>: This final phase allows STAKE holders to vote on proposals that change governance variables. All owner privileges are removed, and all actors wishing to interact with the contract are given equal access.
+	<br><br><br>The following governance variables are introduced in the Protected Phase, and can be voted on by STAKE holders in the Decentralization Phase.
+	<br><br><a name="stake_lock_delay"/><b>STAKE Lock Delay</b>: An unsigned integer representing the number of blocks that must be validated before locked STAKE can be withdrawn after a voting period. A higher value keeps STAKE holders accountable for their voting.
+	<br><br><a name="proposal_threshold"/><b>Proposal Threshold</b>: A double representing the minimum proportion of STAKE one must possess in order to submit proposals.
+	<br><br><a name="approval_threshold"/><b>Approval Threshold</b>: A double representing the minimum proportion of STAKE required for a proposal to pass.
 </p>
