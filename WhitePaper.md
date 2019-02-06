@@ -51,6 +51,7 @@
 	</ul>
 </p>
 
+![Actors](./assets/Actors.png)
 <a name="protocol_variables"></a>
 <h2>Protocol Variables</h2>
 <p>
@@ -67,7 +68,7 @@
 	<br><br><a name="protected_phase"/><b>Protected Phase</b>: This phase introduces the ability to mint STAKE tokens and vote on protocol variables. However, the contract owner now maintains complete control over governance variables. Again, in order to transition to the next phase, the contract owner must call the "relinquishControl" function of the governance contract.
 	<br><br><a name="decentralization_phase"/><b>Decentralization Phase</b>: This final phase allows STAKE holders to vote on proposals that change governance variables. All owner privileges are removed, and all actors wishing to interact with the contract are given equal access.
 	<br><br><br>The following governance variables are introduced in the Protected Phase, and can be voted on by STAKE holders in the Decentralization Phase.
-	<br><br><a name="stake_lock_delay"/><b>STAKE Lock Delay</b>: An unsigned integer representing the number of blocks that must be validated before locked STAKE can be withdrawn after a voting period. A higher value keeps STAKE holders accountable for their voting.
+	<br><br><a name="stake_lock_delay"/><b>STAKE Lock Delay</b>: An unsigned integer representing the number of blocks that must be validated before locked STAKE can be withdrawn after a voting period. A higher STAKE Lock Delay value helps prevent 51% type attacks. If a bad actor aqcuires enough STAKE to 
 	<br><br><a name="proposal_threshold"/><b>Proposal Threshold</b>: A double representing the minimum proportion of STAKE one must possess in order to submit proposals.
 	<br><br><a name="approval_threshold"/><b>Approval Threshold</b>: A double representing the minimum proportion of STAKE required for a proposal to pass.
 </p>
