@@ -17,7 +17,7 @@
 # Table of Contents
 1. [Current Stablecoin Landscape](#current_stablecoin_landscape)
 2. [Tokens and Actors](#tokens_and_actors)
-<br><ul><li>[SWAP](#swap)</li><li>[STAKE](#stake)</li><li>[Swapper](#swapper)</li><li>[Staker](#staker)</li></ul>
+<br><ul><li>[SUPL](#supl)</li><li>[STAKE](#stake)</li><li>[Swapper](#swapper)</li><li>[Staker](#staker)</li></ul>
 3. [Architecture Overview](#architecture_overview)
 4. [Protocol Variables](#protocol_variables)
 <br><ul><li>[Collateral Ranges](#collateral_ranges)</li><li>[Swap Fee](#swap_fee)</li></ul>
@@ -33,11 +33,11 @@
 <a name="tokens_and_actors"></a>
 <h2>Tokens and Actors</h2>
 <p>
-	<a name="swap"></a>
-	<b>SWAP</b>: An ERC20 stablecoin minted and burned by Stable Swapper. SWAP is minted when a user deposits collateral, and burned when a user withdraws collateral. Each SWAP token is redeemable for a stablecoin from the collateral pool. The number of SWAP tokens in existence is always equal to the sum of the stablecoins in the collateral pool. In other words, SWAP is a stablecoin backed by other stablecoins.
-	<br><br><a name="stake"></a><b>STAKE</b>: A protocol token minted by a Stable Swapper governance smart contract once governance has reached the <a href="#protected_phase">Protected Phase</a>. STAKE is used for decentralized governance over the <a href="#protocol_variables">protocol variables</a>. Additionally, Swapping fees are paid out to holders of STAKE. In order to obtain STAKE, a user must send SWAP to a smart contract, which time-locks the SWAP until the STAKE's expiration block number. The only utility of expired STAKE is the ability to retrieve the time-locked SWAP.
-	<br><br><a name="swapper"></a><b>Swapper</b>: An actor swapping between coins held in the collateral pool. Swappers are incentivized by the market dynamics of coins in the collateral pool. Currently, the most obvious incentive for swappers is to act on arbitrage opportunities between coins in the collateral pool. For example, if the Dai/USDC exchange rate on Exchange A is more than 1 + SWAP fee + gas, there is a guaranteed profit opportunity to swap USDC for Dai and sell the Dai on Exchange A.
-	<br><br><a name="staker"></a><b>Staker</b>: An actor holding STAKE. Stakers holding more than the <a href="#proposal_threshold">proposal threshold</a> are permitted to propose changes to protocol variables. All Stakers are able to vote on these proposals. Stakers have the most to lose in the event of a successful attack on the protocol, because their SWAP is time locked in a smart contract and unredeemable until <a href="#stake_lock_delay">STAKE Lock Delay</a> blocks have passed. More on this in <a href="#governance">Governance</a>.
+	<a name="supl"></a>
+	<b>SUPL</b>: An ERC20 stablecoin minted and burned by Stable Swapper. SUPL is minted when a user deposits collateral, and burned when a user withdraws collateral. Each SUPL token is redeemable for a stablecoin from the collateral pool. The number of SUPL tokens in existence is always equal to the sum of the stablecoins in the collateral pool. In other words, SUPL is a stablecoin backed by other stablecoins.
+	<br><br><a name="stake"></a><b>STAKE</b>: A protocol token minted by a Stable Swapper governance smart contract once governance has reached the <a href="#protected_phase">Protected Phase</a>. STAKE is used for decentralized governance over the <a href="#protocol_variables">protocol variables</a>. Additionally, Swapping fees are paid out to holders of STAKE. In order to obtain STAKE, a user must send SUPL to a smart contract, which time-locks the SUPL until the STAKE's expiration block number. The only utility of expired STAKE is the ability to retrieve the time-locked SUPL.
+	<br><br><a name="swapper"></a><b>Swapper</b>: An actor swapping between coins held in the collateral pool. Swappers are incentivized by the market dynamics of coins in the collateral pool. Currently, the most obvious incentive for swappers is to act on arbitrage opportunities between coins in the collateral pool. For example, if the Dai/USDC exchange rate on Exchange A is more than 1 + swap fee + gas, there is a guaranteed profit opportunity to swap USDC for Dai and sell the Dai on Exchange A.
+	<br><br><a name="staker"></a><b>Staker</b>: An actor holding STAKE. Stakers holding more than the <a href="#proposal_threshold">proposal threshold</a> are permitted to propose changes to protocol variables. All Stakers are able to vote on these proposals. Stakers have the most to lose in the event of a successful attack on the protocol, because their SUPL is time locked in a smart contract and unredeemable until <a href="#stake_lock_delay">STAKE Lock Delay</a> blocks have passed. More on this in <a href="#governance">Governance</a>.
 </p>
 
 <a name="architecture_overview"></a>
@@ -45,9 +45,9 @@
 <p>
 	At the center of Stable Swapper's architecture is a smart contract facilitating the following operations:
 	<ul>
-		<li>Minting SWAP tokens by taking deposits of stablecoins that satisfy current protocol variables.</li>
-		<li>Paying off SWAP redemptions with stablecoins from the collateral pool.</li>
 		<li>Performing swaps for swappers.</li>
+		<li>Minting SUPL tokens by taking deposits of stablecoins that satisfy current protocol variables.</li>
+		<li>Paying off SUPL redemptions with stablecoins from the collateral pool.</li>
 	</ul>
 </p>
 
